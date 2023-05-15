@@ -16,21 +16,25 @@
   It will show:
    - Battery percentage
 */
+
+// Libraries
+#include <SoftwareSerial.h>
 #include <TimeLib.h>
 #include <U8g2lib.h>
 #include <SPI.h>
 #include <Adafruit_MLX90614.h>
-
-// Define the pins for the LCD
-#define CS_PIN 10
-#define DC_PIN 9
-#define RESET_PIN 8
+#include <TinyGPS.h>
 
 // Define the display object
-U8G2_SSD1306_128X64_NONAME_F_SW_I2C u8g2(U8G2_R0, /* clock=*/ SCL, /* data=*/ SDA, /* reset=*/ RESET_PIN);
+U8G2_ST7920_128X64_F_SW_SPI u8g2(U8G2_R2, /* clock=*/ 11, /* data=*/ 12, /* CS=*/ 13, /* reset=*/ U8X8_PIN_NONE);
 
 // Define the MLX90614 sensor object
 Adafruit_MLX90614 tempSensor;
+
+// Start the GPS
+TinyGPS gps;
+// Se colocan en los pines 4 y 3 los pines TX y RX del GPS
+SoftwareSerial serialgps(4,3);
 
 // Define the pulse count variables
 volatile unsigned long totalPulseCount = 0;
@@ -58,6 +62,9 @@ void setup() {
 
   // Set the default screen to the time screen
   displayTime();
+
+  // Set time
+  setTime(0, 0, 0, 15, 5,  2023);
 }
 // Define the total number of screens
 const int NUM_SCREENS = 4;
@@ -92,6 +99,7 @@ void handlePulseInterrupt() {
 // Displays the current time on the LCD.
 void displayTime() {
   u8g2.clearBuffer();
+  u8g2.setFlipMode(1);
   u8g2.setFont(u8g2_font_ncenB08_tr);
   u8g2.setCursor(0, 20);
   u8g2.print("Current time:");
@@ -113,6 +121,7 @@ String getCurrentTime() {
 // Displays the state of the switches on the LCD.
 void displaySwitches() {
   u8g2.clearBuffer();
+  u8g2.setFlipMode(1);
   u8g2.setFont(u8g2_font_ncenB08_tr);
   u8g2.setCursor(0, 20);
   u8g2.print("Switch 1: ");
@@ -129,6 +138,7 @@ void displaySwitches() {
 // Displays the temperature and speed on the LCD.
 void displayTempAndSpeed() {
   u8g2.clearBuffer();
+  u8g2.setFlipMode(1);
   u8g2.setFont(u8g2_font_ncenB08_tr);
   u8g2.setCursor(0, 20);
   u8g2.print("Engine Temp:");
@@ -153,6 +163,7 @@ float getCurrentSpeed() {
 // Displays the mileage on the LCD.
 void displayMileage() {
   u8g2.clearBuffer();
+  u8g2.setFlipMode(1);
   u8g2.setFont(u8g2_font_ncenB08_tr);
   u8g2.setCursor(0, 20);
   u8g2.print("Mileage:");
