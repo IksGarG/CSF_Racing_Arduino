@@ -49,10 +49,7 @@ const float SECONDS_PER_HOUR = 3600.0;
 void setup() {
   // Initialize the LCD
   u8g2.begin();
-  
-  // Initialize the SPI interface
-  SPI.begin();
-  SPI.setClockDivider(SPI_CLOCK_DIV2);
+  u8g2.setColorIndex(1);
 
   // Initialize the MLX90614 sensor
   tempSensor.begin();
